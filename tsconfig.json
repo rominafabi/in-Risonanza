@@ -1,6 +1,6 @@
 {
   "exclude": ["./cypress", "./cypress.config.ts"],
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "prisma/seed.ts", "seed.ms"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "prisma/seed.ts", "seed.ms", "seeds.ts"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "types": ["node","vitest/globals"],

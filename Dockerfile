@@ -33,7 +33,6 @@ COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD prisma .
 RUN npx prisma generate
-RUN npx ts-node --require tsconfig-paths/register prisma/seed.ts
 
 ADD . .
 RUN npm run build
