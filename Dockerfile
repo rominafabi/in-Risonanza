@@ -51,4 +51,4 @@ ADD . .
 
 CMD ["npm", "start"]
 
-RUN npx prisma db seed
+RUN npx ts-node --require tsconfig-paths/register prisma/seed.ts
