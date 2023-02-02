@@ -34,7 +34,6 @@
     "/postgres-data"
   ],
   "dependencies": {
-    "@faker-js/faker": "^7.6.0",
     "@material-tailwind/react": "^1.2.5",
     "@prisma/client": "^4.9.0",
     "@remix-run/express": "^1.12.0",
@@ -56,6 +55,7 @@
     "typewriter-effect": "^2.19.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@remix-run/dev": "^1.12.0",
     "@remix-run/eslint-config": "^1.12.0",
     "@testing-library/cypress": "^8.0.7",
