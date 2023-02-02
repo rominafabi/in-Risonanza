@@ -1,3 +1,11 @@
+// Commands to know:
+// `npx prisma generate` - update TypeScript definitions based on this schema
+// `npx prisma db push` - push the schema changes to the database
+// `npx prisma studio` - open the Studio, which allows you to edit the schema.
+// `npx prisma migrate reset` - reset the migrations to the last version. This will reset the DB and run the seed script
+// `npx prisma migrate dev --name <descriptive-name>` - generate a migration file for any changes you make to the schema (this will be committed).
+
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -7,9 +15,27 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  UTENTE
+  PENDING
+  OPERATORE
+  ADMIN
+}
+
+enum SocialDen {
+  FACEBOOK
+  INSTAGRAM
+  TWITTER
+  YOUTUBE
+  LINKEDIN
+  TELEGRAM
+  PERSONALE
+}
+
 model User {
   id    String @id @default(cuid())
   email String @unique
+  role  Role   @default(UTENTE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -19,10 +45,79 @@ model User {
 }
 
 model Password {
-  hash String
-
+  hash   String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
+}
+
+model Operatore {
+  id                String             @id @default(cuid())
+  email             String             @unique
+  cellulare         String             @unique
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  role              Role               @default(UTENTE)
+  comune            Comune             @relation(fields: [comuneId], references: [id])
+  comuneId          String
+  passwordOperatore PasswordOperatore?
+  servizi           ServiziOperatore[]
+  pagina            Pagina?
+}
+
+model Pagina {
+  id          String       @id @default(cuid())
+  operatore   Operatore    @relation(fields: [operatoreId], references: [id])
+  operatoreId String       @unique
+  profilePic  String       @default("/images/logo/defaultProfilePic.png")
+  nome        String       @default("")
+  cognome     String       @default("")
+  titolo      String       @default("")
+  biografia   String       @default("")
+  socials     SocialLink[]
+}
+
+model Servizio {
+  id            Int                @id @default(autoincrement())
+  denominazione String
+  operatori     ServiziOperatore[]
+}
+
+model ServiziOperatore {
+  operatore   Operatore @relation(fields: [operatoreId], references: [id])
+  operatoreId String
+  servizio    Servizio  @relation(fields: [servizioId], references: [id])
+  servizioId  Int
+  assignedAt  DateTime  @default(now())
+  comune      Comune    @relation(fields: [comuneId], references: [id])
+  comuneId    String
+  prezzo Int @default(50)
+
+  @@id([operatoreId, servizioId])
+}
+
+model Comune {
+  id        String             @id
+  nome      String
+  nomeProv  String
+  sigla     String
+  nomeReg   String
+  codReg    String
+  operatori Operatore[]
+  servizi   ServiziOperatore[]
+}
+
+model PasswordOperatore {
+  hash        String
+  operatore   Operatore @relation(fields: [operatoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  operatoreId String    @unique
+}
+
+model SocialLink {
+  id            Int       @id @default(autoincrement())
+  pagina        Pagina    @relation(fields: [paginaId], references: [id])
+  paginaId      String
+  denominazione SocialDen
+  link          String
 }
 
 model Note {
