@@ -27,7 +27,7 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node --experimental-loader=module prisma/seed.mjs"
   },
   "prettier": {},
   "eslintIgnore": [

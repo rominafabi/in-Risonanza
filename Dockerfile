@@ -33,8 +33,6 @@ COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD prisma .
 RUN npx prisma generate
-RUN npx ts-node seed
-
 
 ADD . .
 RUN npm run build
@@ -50,5 +48,6 @@ COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
 ADD . .
+RUN npx prisma db seed
 
 CMD ["npm", "start"]
