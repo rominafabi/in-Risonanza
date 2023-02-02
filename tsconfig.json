@@ -3,7 +3,7 @@
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "prisma/seed.ts", "seed.ms"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
+    "types": ["node","vitest/globals"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
