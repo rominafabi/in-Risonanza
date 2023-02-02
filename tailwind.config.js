@@ -8,11 +8,7 @@ module.exports = withMT({
       openSans: ["openSans", "sans-serif"],
       semiBold: ["semiBold", "sans-serif"],
       openSansBold: ["openSansBold", "sans-serif"],
-      uniNeueLight: ["uniNeueLight", "sans-serif"],
-      uniNeueBook: ["uniNeueBook", "sans-serif"],
-      uniNeueRegular: ["uniNeueRegular", "sans-serif"],
-      uniNeueBold: ["uniNeueBold", "sans-serif"],
-    },
+     },
     colors: {
       main: "#02C3A5",
       secondary: "#d8ebe8",
