@@ -50,3 +50,5 @@ COPY --from=build /myapp/public /myapp/public
 ADD . .
 
 CMD ["npm", "start"]
+
+RUN npx prisma db seed
