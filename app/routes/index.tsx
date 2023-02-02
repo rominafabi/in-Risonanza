@@ -1,6 +1,6 @@
 import { Typography } from "@material-tailwind/react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
-import { useOptionalOperatore, useOptionalUser } from "~/utils";
+import { Link, useLoaderData } from "@remix-run/react";
+import { useOptionalUser } from "~/utils";
 import MyMenu from "./menu";
 import Typewriter from "typewriter-effect"
 import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
@@ -21,10 +21,6 @@ export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
 export default function Index() {
   const { userRole } = useLoaderData() as LoaderData;
   const user = useOptionalUser();
-  const operator = useOptionalOperatore();
-
-  console.log("user is: ",user);
-  console.log("operator is: ",operator);
 
   return (
     <main className="min-h-screen min-w-screen bg-gray-900">
@@ -80,7 +76,7 @@ export default function Index() {
                       </Link>
                     </div>
                   )}
-                  {operator ? (
+{/*                   {operator ? (
                             <Form action="/logout" method="post">
                             <button
                               type="submit"
@@ -89,7 +85,7 @@ export default function Index() {
                               Logout
                             </button>
                           </Form>
-                  ) : (<h1 className="text-white">non operatore</h1>)}
+                  ) : (<h1 className="text-white">non operatore</h1>)} */}
           </div>
         </div>
         <div className="absolute w-full h-full z-0 bg-fixed bg-cover bg-center bg-no-repeat bg-main-background brightness-50">

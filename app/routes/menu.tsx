@@ -11,11 +11,10 @@ import {
   MenuItem,
 } from "@material-tailwind/react";
 import { Form, NavLink } from "@remix-run/react";
-import { useOptionalOperatore, useOptionalUser } from "~/utils";
+import { useOptionalUser } from "~/utils";
 
 
 export default function MyMenu(data: any) {
-  const operator = useOptionalOperatore();
   const user = useOptionalUser();
 
   const [openNav, setOpenNav] = useState(false);
@@ -325,7 +324,7 @@ export default function MyMenu(data: any) {
           
         </div>
         {/* CONTENITORE LOGIN USER / OPERATORE*/}
-        {operator && (
+        {/* {operator && (
           <Form action="/logout" method="post">
             <button type="submit" className="rounded bg-white py-2 px-6 text-main hover:text-hearth active:bg-white">
               Logout
@@ -341,7 +340,7 @@ export default function MyMenu(data: any) {
             Accedi
           </NavLink>
           </div>
-        )}
+        )} */}
         {user && (
           <Form action="/logout" method="post">
           <button type="submit" className="rounded bg-white py-2 px-6 text-main hover:text-hearth active:bg-white">

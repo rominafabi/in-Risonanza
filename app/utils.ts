@@ -2,8 +2,6 @@ import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
-import type { Operatore } from "~/models/operatore.server";
-import { prisma } from "./db.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -50,10 +48,6 @@ function isUser(user: any): user is User {
   return user && typeof user === "object" && typeof user.email === "string";
 }
 
-function isOperatore(operatore: any): operatore is Operatore {
-  return operatore && typeof operatore === "object" && typeof operatore.email === "string";
-}
-
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData("root");
   if (!data || !isUser(data.user)) {
@@ -61,24 +55,6 @@ export function useOptionalUser(): User | undefined {
   }
   return data.user;
 }
-
-export function useOptionalOperatore(): Operatore | undefined {
-  const data = useMatchesData("root");
-  if (!data || !isOperatore(data.operatore)) {
-    return undefined;
-  }
-  return data.operatore;
-}
-
-export function useOptionalComune(nomeProv: string) {
-  return prisma.comune.findMany({
-    where: {
-       nomeProv: nomeProv,
-    },
-    select: {id: true, nome: true, sigla: true},
- })
-}
-
 
 export function useUser(): User {
   const maybeUser = useOptionalUser();
