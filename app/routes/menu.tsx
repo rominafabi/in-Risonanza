@@ -10,13 +10,13 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-import { Form, NavLink } from "@remix-run/react";
-import { useOptionalUser } from "~/utils";
+import { Form, NavLink, } from "@remix-run/react";
 
 
 export default function MyMenu(data: any) {
-  const user = useOptionalUser();
-
+  const session = data.session;
+  console.log("session is:", session);
+  
   const [openNav, setOpenNav] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
@@ -324,14 +324,14 @@ export default function MyMenu(data: any) {
           
         </div>
         {/* CONTENITORE LOGIN USER / OPERATORE*/}
-        {/* {operator && (
+        {session.data.operatoreId && (
           <Form action="/logout" method="post">
             <button type="submit" className="rounded bg-white py-2 px-6 text-main hover:text-hearth active:bg-white">
               Logout
             </button>
           </Form>
           )}
-        {!operator && !user && (
+        {!session.data.operatoreId && !session.data.userId && (
           <div className="flex gap-2">
           <NavLink to="/login/operatore" className="rounded bg-white py-2 px-6 text-main hover:text-hearth">
             Sei un Operatore?
@@ -340,8 +340,8 @@ export default function MyMenu(data: any) {
             Accedi
           </NavLink>
           </div>
-        )} */}
-        {user && (
+        )}
+        {session.data.userId && (
           <Form action="/logout" method="post">
           <button type="submit" className="rounded bg-white py-2 px-6 text-main hover:text-hearth active:bg-white">
             Logout

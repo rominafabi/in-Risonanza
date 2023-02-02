@@ -1,32 +1,37 @@
 import { Typography } from "@material-tailwind/react";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useOptionalUser } from "~/utils";
 import MyMenu from "./menu";
 import Typewriter from "typewriter-effect"
-import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs, LoaderFunction, Session } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getOperatoreRoleRequest } from "~/session.server";
+import { getOperatoreRoleRequest, getSession } from "~/session.server";
 
 type LoaderData = {
   userRole: Awaited<ReturnType<typeof getOperatoreRoleRequest>>;
+  session: Session;
 };
 
 export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   const userRole = await getOperatoreRoleRequest(request)
+  const session = await getSession(request);
 
-  return json<LoaderData>({ userRole });
+  return json<LoaderData>({ userRole , session});
 };
 
 
 export default function Index() {
-  const { userRole } = useLoaderData() as LoaderData;
+  const { userRole, session } = useLoaderData() as LoaderData;
   const user = useOptionalUser();
+  
+
+  console.log("session is:", session)
 
   return (
     <main className="min-h-screen min-w-screen bg-gray-900">
       <section className="min-h-screen max-h-screen min-w-screen relative bg-gray-900">
         <div className="absolute z-10 w-full h-full flex flex-col">
-          <MyMenu role={userRole}/>
+          <MyMenu session={session}/>
           <div className="w-full h-full flex flex-col items-center justify-center">
             <Typography variant="h1" className="font-serif lg:text-7xl" color="white">
             App Title
@@ -57,7 +62,7 @@ export default function Index() {
                         Sign up
                       </Link>
                       <Link
-                        to="/registrazioneOperatore"
+                        to="/registrazione"
                         className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 sm:px-8"
                         >
                         Sign as Operatore
@@ -76,7 +81,7 @@ export default function Index() {
                       </Link>
                     </div>
                   )}
-{/*                   {operator ? (
+                  {session.data.operatoreId ? (
                             <Form action="/logout" method="post">
                             <button
                               type="submit"
@@ -85,7 +90,7 @@ export default function Index() {
                               Logout
                             </button>
                           </Form>
-                  ) : (<h1 className="text-white">non operatore</h1>)} */}
+                  ) : (<h1 className="text-white">non operatore</h1>)}
           </div>
         </div>
         <div className="absolute w-full h-full z-0 bg-fixed bg-cover bg-center bg-no-repeat bg-main-background brightness-50">
