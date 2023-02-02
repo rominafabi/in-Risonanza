@@ -1,32 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import comuni from "./comuni.json"
 
 const prisma = new PrismaClient();
-
-const comuni = [
-   {
-      "comune": "Agliè",
-      "pro_com_t": "001001",
-      "den_prov": "Torino",
-      "sigla": "TO",
-      "den_reg": "Piemonte",
-      "cod_reg": "1"
-   },
-   {
-      "comune": "Airasca",
-      "pro_com_t": "001002",
-      "den_prov": "Torino",
-      "sigla": "TO",
-      "den_reg": "Piemonte",
-      "cod_reg": "1"
-   },
-   {
-      "comune": "Ala di Stura",
-      "pro_com_t": "001003",
-      "den_prov": "Torino",
-      "sigla": "TO",
-      "den_reg": "Piemonte",
-      "cod_reg": "1"
-   }]
 
 async function seed() {
 
