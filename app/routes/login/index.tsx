@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
+import { AuthTitle } from "~/components/auth/authComponents";
 
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getOperatoreId, getUserId } from "~/session.server";
@@ -82,17 +83,15 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-full flex-col justify-center">
-      <h1 className="font-semiBold mx-auto text-4xl font-medium p-4 text-gray-700">
-         Effettua il Login come Utente
-      </h1>
+      <AuthTitle titleText="Effettua il Login come Utente" />
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6" noValidate>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
-              Email address
+              Indirizzo Email
             </label>
             <div className="mt-1">
               <input
@@ -105,7 +104,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:outline-main font-openSans text-blue-gray-500"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:border-main focus:ring-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -118,7 +117,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Password
             </label>
@@ -131,7 +130,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:outline-main font-openSans text-blue-gray-500"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500 focus:text-blue-gray-200"
               />
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -144,35 +143,35 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
+            className="font-openSans text-base lg:text-lg w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
           >
             Login
           </button>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-col md:flex-row">
             <div className="flex items-center">
               <input
                 id="remember"
                 name="remember"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-blue-gray-300 text-main focus:ring-main accent-main"
               />
               <label
                 htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
+                className="ml-2 block text-sm text-blue-gray-700 font-semiBold"
               >
                 Remember me
               </label>
             </div>
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-500 py-2">
               Vuoi diventare un Utente?{" "}
               <Link
-                className="text-blue-500 underline"
+                className="text-main underline"
                 to={{
                   pathname: "/registrazione",
                   search: searchParams.toString(),
                 }}
               >
-                Registrarti
+                Registrati
               </Link>
             </div>
           </div>

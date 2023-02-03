@@ -1,7 +1,7 @@
 import type { LoaderArgs} from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {  Outlet } from "@remix-run/react";
-import HeaderNav from "~/components/access/header";
+import HeaderNav from "~/components/auth/header";
 import { getOperatoreId, getUserId } from "~/session.server";
 
 
@@ -17,9 +17,9 @@ export default function Registrazione() {
     <section className="flex h-full max-h-screen max-w-full md:flex-row flex-col">
       <HeaderNav 
         toOperatore="/login/operatore"
-        operatorePopover="Login come Operatore"
+        textOperatore="Accesso come Operatore"
         toUser="/login"
-        userPopover="Login come Utente"
+        textUtente="Accesso come Utente"
       />
       <div id="outlet-container" className="h-full w-full">
         <Outlet />
