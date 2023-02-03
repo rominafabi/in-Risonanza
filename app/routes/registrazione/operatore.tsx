@@ -1,6 +1,6 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData, useSearchParams } from "@remix-run/react";
+import { Form, Link, NavLink, useActionData, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
 import { createOperatoreSession } from "~/session.server";
@@ -8,12 +8,17 @@ import { createOperatoreSession } from "~/session.server";
 import { createOperatore, getOperatoreByEmail } from "~/models/operatore.server";
 import { safeRedirect, validateEmail } from "~/utils";
 import type { Comune, Role } from "@prisma/client";
-import { getComuniList } from "~/models/comuni.server";
-import { faker } from "@faker-js/faker";
+import { getComuneListByProv, getProvList } from "~/models/comuni.server";
+import { AuthTitle } from "~/components/auth/authComponents";
 
-export async function loader() {
-  const comuni = await getComuniList();
-  return json({comuni});
+export async function loader({ params, request }: LoaderArgs) {
+  const url = new URL(request.url);
+  const query = url.searchParams;
+  const sigla = query.get("provincia") || " ";
+
+  const province = await getProvList();
+  const comuni = await getComuneListByProv(sigla);
+  return json({comuni,province,sigla});
 }
 
 export async function action({ request }: ActionArgs) {
@@ -22,7 +27,7 @@ export async function action({ request }: ActionArgs) {
   const password = formData.get("password");
   const role = formData.get("role");
   const comune = formData.get("comune");
-  const telefono = faker.phone.number();
+  const telefono = "332323323";
   const userIs : Role = "PENDING";
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
   console.log("comune tipo:", typeof comune?.toString())
@@ -90,12 +95,15 @@ export const meta: MetaFunction = () => {
 
 export default function RegistrazioneOperatoreRoute() {
   const [searchParams] = useSearchParams();
+  const [siglaProv, setSiglaProv] = React.useState("");
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
   const comuneRef = React.useRef<HTMLSelectElement>(null);
+  const provinciaRef = React.useRef<HTMLSelectElement>(null);
   const data = useLoaderData();
+  const province = data.province;
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -105,19 +113,29 @@ export default function RegistrazioneOperatoreRoute() {
     } else if (actionData?.errors?.comune) {
       comuneRef.current?.focus();
     }
-  }, [actionData]);
 
+    if(searchParams.get("provincia") !== " " && searchParams.get("provincia") !== null){
+      console.log("provincia is:",searchParams.get("provincia"))
+      document.getElementById("comune")?.removeAttribute("disabled");
+    }else if(searchParams.get("provincia") === " "){
+      console.log("params is empty")
+      document.getElementById("comune")?.setAttribute("disabled", '');
+    }
+  }, [actionData, searchParams]);
+
+  const provUrl = new URLSearchParams(searchParams);
+  provUrl.set("provincia", `${siglaProv}`);
   return (
     <div className="flex min-h-full flex-col justify-center">
-      <h1 className="font-sans mx-auto text-4xl font-medium p-4 text-gray-700">
-         Crea il tuo profilo da operatore
-      </h1>
+      <AuthTitle titleText="Crea il tuo profilo da operatore" />
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6" noValidate>
+
+          {/* INPUT OF EMAIL */}
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Email address
             </label>
@@ -132,7 +150,7 @@ export default function RegistrazioneOperatoreRoute() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -141,11 +159,11 @@ export default function RegistrazioneOperatoreRoute() {
               )}
             </div>
           </div>
-
+          {/* INPUT OF PASSWORD*/}
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Password
             </label>
@@ -158,7 +176,7 @@ export default function RegistrazioneOperatoreRoute() {
                 autoComplete="new-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -167,48 +185,95 @@ export default function RegistrazioneOperatoreRoute() {
               )}
             </div>
           </div>
-          <div>
-            <label
-              htmlFor="comune"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Comune
-            </label>
-            <div className="mt-1">
-              <select
-                id="select"
-                name="comune"
-                ref={comuneRef}
-                aria-invalid={actionData?.errors?.comune ? true : undefined}
-                aria-describedby="comune-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+          <div className="flex flex-row gap-2 ">
+            {/* INPUT OF PROVINCE */}
+            <div className="w-1/2">
+              <label
+                htmlFor="Provincia"
+                className="block text-sm font-openSans text-blue-gray-500"
               >
-                <option value={undefined}> </option>
-                {data.comuni.map((comune : Comune) => (
-                  <option value={comune.id} key={comune.id}>
-                      {`${comune.nome} (${comune.sigla})`}
-                  </option>
-                ))}
-              </select>
-              {actionData?.errors?.comune && (
-               <div className="pt-1 text-red-700" id="comune-error">
-                  {actionData.errors.comune}
-               </div>
-              )}
+                Provincia
+              </label>
+              <div className="mt-1">
+                <select
+                  id="provincia"
+                  name="provincia"
+                  ref={provinciaRef}
+                  aria-invalid={actionData?.errors?.comune ? true : undefined}
+                  aria-describedby="provincia-error"
+                  className="w-full rounded border border-gray-500 px-2 py-2 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
+                  defaultValue={searchParams.get("provincia") || ""}
+                  onChange={async(e) => {
+                    await setSiglaProv(e.target.value);
+                    document.getElementById("navProv")?.click();
+                  }}
+                >
+                  <option value={" "}> </option>
+                  {province ? 
+                  province.map((provincia : Comune) => (
+                    <option value={provincia.sigla} key={provincia.sigla}>
+                        {`${provincia.nomeProv} (${provincia.sigla})`}
+                    </option>
+                  ))
+                  :
+                  (<option value={" "}> </option>)}
+                </select>
+                <NavLink id="navProv" to={`?${provUrl.toString()}`}>
+                </NavLink>
+                {actionData?.errors?.comune && (
+                <div className="pt-1 text-red-700" id="comune-error">
+                    {actionData.errors.comune}
+                </div>
+                )}
+              </div>
+            </div>
+            {/* INPUT OF COMUNE */}
+            <div className="w-1/2">
+              <label
+                htmlFor="comune"
+                className="block text-sm font-openSans text-blue-gray-500"
+              >
+                Comune
+              </label>
+              <div className="mt-1">
+                <select
+                  id="comune"
+                  name="comune"
+                  ref={comuneRef}
+                  aria-invalid={actionData?.errors?.comune ? true : undefined}
+                  aria-describedby="comune-error"
+                  className="w-full rounded border border-gray-500 px-2 py-2 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
+                  disabled
+                >
+                  <option value={undefined}> </option>
+                  {data.comune ? 
+                  data.comuni.map((comune : Comune) => (
+                    <option value={comune.id} key={comune.id}>
+                        {`${comune.nome}`}
+                    </option>
+                  )) : (<option value={undefined}> </option>)}
+                </select>
+                {actionData?.errors?.comune && (
+                <div className="pt-1 text-red-700" id="comune-error">
+                    {actionData.errors.comune}
+                </div>
+                )}
+              </div>
             </div>
           </div>
+
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="font-openSans text-base lg:text-lg w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
           >
             Create Account
           </button>
           <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-500 py-2">
               Hai già un account?{" "}
               <Link
-                className="text-blue-500 underline"
+                className="text-main underline"
                 to={{
                   pathname: "/login/operatore",
                   search: searchParams.toString(),

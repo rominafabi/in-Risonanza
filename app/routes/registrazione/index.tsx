@@ -7,6 +7,7 @@ import { createUserSession } from "~/session.server";
 
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import { AuthTitle } from "~/components/auth/authComponents";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
@@ -16,7 +17,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email invalida", password: null } },
+      { errors: { email: "Email non valida", password: null } },
       { status: 400 }
     );
   }
@@ -81,15 +82,13 @@ export default function IndexRegistrazioneRoute() {
 
   return (
     <div className="flex min-h-full flex-col justify-center">
-      <h1 className="font-sans mx-auto text-4xl font-medium p-4 text-gray-700">
-         Crea il tuo profilo
-      </h1>
+      <AuthTitle titleText="Crea il tuo profilo" />
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6" noValidate>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Indirizzo email
             </label>
@@ -104,10 +103,10 @@ export default function IndexRegistrazioneRoute() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:border-main focus:ring-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="email-error">
                   {actionData.errors.email}
                 </div>
               )}
@@ -117,7 +116,7 @@ export default function IndexRegistrazioneRoute() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Password
             </label>
@@ -130,10 +129,10 @@ export default function IndexRegistrazioneRoute() {
                 autoComplete="new-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="password-error">
                   {actionData.errors.password}
                 </div>
               )}
@@ -142,15 +141,15 @@ export default function IndexRegistrazioneRoute() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="font-openSans text-base lg:text-lg w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
           >
             Crea un Account
           </button>
           <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-500 py-2">
               Hai già un account?{" "}
               <Link
-                className="text-blue-500 underline"
+                className="text-main underline"
                 to={{
                   pathname: "/login",
                   search: searchParams.toString(),

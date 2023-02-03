@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
+import { AuthTitle } from "~/components/auth/authComponents";
 
 import { verifyOperatoreLogin } from "~/models/operatore.server";
 import { createOperatoreSession, getOperatoreId, getUserId } from "~/session.server";
@@ -23,21 +24,21 @@ export async function action({ request }: ActionArgs) {
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email is invalid", password: null } },
+      { errors: { email: "Email non valida", password: null } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { password: "Password is required", email: null } },
+      { errors: { password: "Password richiesta", email: null } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { password: "Password is too short", email: null } },
+      { errors: { password: "Password troppo corta", email: null } },
       { status: 400 }
     );
   }
@@ -46,7 +47,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!operatore) {
     return json(
-      { errors: { email: "Invalid email or password", password: null } },
+      { errors: { email: "Email o Password invalide", password: null } },
       { status: 400 }
     );
   }
@@ -83,15 +84,13 @@ export default function LoginOperatorePage() {
 
   return (
     <div className="flex min-h-full flex-col justify-center">
-      <h1 className="font-sans mx-auto text-4xl font-medium p-4 text-gray-700">
-         Effettua il Login come Operatore
-      </h1>
+      <AuthTitle titleText="Effettua il Login come Operatore" />
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6" noValidate>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Indirizzo Email
             </label>
@@ -106,10 +105,10 @@ export default function LoginOperatorePage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="email-error">
                   {actionData.errors.email}
                 </div>
               )}
@@ -119,7 +118,7 @@ export default function LoginOperatorePage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-openSans text-blue-gray-500"
             >
               Password
             </label>
@@ -132,10 +131,10 @@ export default function LoginOperatorePage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="password-error">
                   {actionData.errors.password}
                 </div>
               )}
@@ -145,7 +144,7 @@ export default function LoginOperatorePage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="font-openSans text-base lg:text-lg w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
           >
             Login
           </button>
@@ -155,19 +154,19 @@ export default function LoginOperatorePage() {
                 id="remember"
                 name="remember"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-blue-gray-300 text-main focus:ring-main accent-main"
               />
               <label
                 htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
+                className="ml-2 block text-sm text-blue-gray-700 font-semiBold"
               >
                 Remember me
               </label>
             </div>
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-500 py-2">
               Vuoi diventare un Operatore?{" "}
               <Link
-                className="text-blue-500 underline"
+                className="text-main underline"
                 to={{
                   pathname: "/registrazione/operatore",
                   search: searchParams.toString(),

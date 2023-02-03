@@ -40,12 +40,15 @@ export function getComuniList() {
  }
 
  export function getComuneListByProv(siglaProv : string) {
+  if(siglaProv !== " "){
    return prisma.comune.findMany({
       where: {
          sigla: siglaProv,
       },
       select: {id: true, nome: true, sigla: true},
-   })
+   })} else {
+    return [];
+   }
  }
 
  export async function getProvinceByRegion(sigla: string) {

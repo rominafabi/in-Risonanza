@@ -24,21 +24,21 @@ export async function action({ request }: ActionArgs) {
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email is invalid", password: null } },
+      { errors: { email: "Email non valida", password: null } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { password: "Password is required", email: null } },
+      { errors: { password: "Password richiesta", email: null } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { password: "Password is too short", email: null } },
+      { errors: { password: "Password troppo corta", email: null } },
       { status: 400 }
     );
   }
@@ -47,7 +47,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!user) {
     return json(
-      { errors: { email: "Invalid email or password", password: null } },
+      { errors: { email: "Email o Password invalide", password: null } },
       { status: 400 }
     );
   }
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:border-main focus:ring-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="email-error">
                   {actionData.errors.email}
                 </div>
               )}
@@ -130,10 +130,10 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500 focus:text-blue-gray-200"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
+                <div className="py-1 my-1 rounded px-2 text-white bg-hearth" id="password-error">
                   {actionData.errors.password}
                 </div>
               )}

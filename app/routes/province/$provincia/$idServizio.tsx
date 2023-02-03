@@ -105,6 +105,7 @@ export default function RouteServizioProvincia() {
   const [ activeSortNewest, setActiveSortNewest] = useState(false);
   const activeClassNavLink = "w-full duration-300 text-xs font-openSans flex flex-row justify-center items-center gap-2 px-6 py-2 bg-white rounded text-main border-2 border-main hover:bg-white hover:text-main";
   const defaultClassNavLink = "w-full duration-300 text-xs font-openSans flex flex-row justify-center items-center gap-2 px-6 py-2 bg-main rounded text-white border-2 border-main hover:bg-white hover:text-main";
+  
   const nameAscOrder = new URLSearchParams(searchParams);
   nameAscOrder.set("sort", "asc");
 
