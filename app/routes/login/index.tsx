@@ -82,7 +82,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-full flex-col justify-center">
-      <h1 className="font-sans mx-auto text-4xl font-medium p-4 text-gray-700">
+      <h1 className="font-semiBold mx-auto text-4xl font-medium p-4 text-gray-700">
          Effettua il Login come Utente
       </h1>
       <div className="mx-auto w-full max-w-md px-8">
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:outline-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:outline-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -144,7 +144,7 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="w-full rounded bg-main  py-2 px-4 text-white hover:bg-white hover:text-main focus:bg-white border-2 border-main"
           >
             Login
           </button>

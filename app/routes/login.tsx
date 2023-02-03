@@ -14,7 +14,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function Registrazione() {
   return (
-    <section className="flex h-full max-h-screen max-w-full flex-col">
+    <section className="flex h-full max-h-screen max-w-full md:flex-row flex-col">
       <HeaderNav 
         toOperatore="/login/operatore"
         operatorePopover="Login come Operatore"

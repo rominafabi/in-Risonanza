@@ -10,7 +10,7 @@ export default function ProvinciaList(data: any) {
    const containerClass = "w-full h-full bg-secondary p-4 rounded-xl flex flex-col flex-wrap items-start items-stretch";
    const secondContainerClass = "w-full h-min shrink flex-auto";
    const letterClass = "text-white text-lg bg-main rounded px-2 my-2 font-semiBold";
-   const provinciaClass = "px-6 text-paragraph font-openSans hover:text-red-500";
+   const provinciaClass = "bg-white hover:bg-main duration-300 rounded-xl my-2 py-1 px-6 text-blue-gray-500 font-openSans hover:text-white";
 
    const filterProvincesByLetter = (provinces: Provincia[], letter: string) => {
       return provinces.filter(province => province.nomeProv.startsWith(letter));
@@ -20,7 +20,7 @@ export default function ProvinciaList(data: any) {
    return (
       <section className="h-full w-screen max-w-screen relative bg-white p-4 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div className={containerClass}>
-      {["A", "B", "C"].map(letter => (
+      {["A", "B", "C", "E"].map(letter => (
          <div key={letter} className={secondContainerClass}>
             <h5 className={letterClass}>{letter}</h5>
             <ul>
@@ -34,7 +34,7 @@ export default function ProvinciaList(data: any) {
       ))}
       </div>
       <div className={containerClass}>
-         {["E", "F", "G", "I", "L", "M"].map(letter => (
+         {["F", "G", "I", "L", "M"].map(letter => (
          <div key={letter} className={secondContainerClass}>
             <h5 className={letterClass}>{letter}</h5>
             <ul>
