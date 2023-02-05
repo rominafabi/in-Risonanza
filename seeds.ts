@@ -2140,14 +2140,6 @@ const comuni = [
       "cod_reg": "1"
    },
    {
-      "comune": "Torino",
-      "pro_com_t": "001272",
-      "den_prov": "Torino",
-      "sigla": "TO",
-      "den_reg": "Piemonte",
-      "cod_reg": "1"
-   },
-   {
       "comune": "Torrazza Piemonte",
       "pro_com_t": "001273",
       "den_prov": "Torino",
