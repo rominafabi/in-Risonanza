@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, NavLink, useActionData, useLoaderData, useSearchParams } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
 import { createOperatoreSession } from "~/session.server";
@@ -94,8 +94,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function RegistrazioneOperatoreRoute() {
-  const [searchParams] = useSearchParams();
-  const [siglaProv, setSiglaProv] = React.useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
@@ -103,7 +102,6 @@ export default function RegistrazioneOperatoreRoute() {
   const comuneRef = React.useRef<HTMLSelectElement>(null);
   const provinciaRef = React.useRef<HTMLSelectElement>(null);
   const data = useLoaderData();
-  const province = data.province;
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -122,9 +120,6 @@ export default function RegistrazioneOperatoreRoute() {
       document.getElementById("comune")?.setAttribute("disabled", '');
     }
   }, [actionData, searchParams]);
-
-  const provUrl = new URLSearchParams(searchParams);
-  provUrl.set("provincia", `${siglaProv}`);
   return (
     <div className="flex min-h-full flex-col justify-center">
       <AuthTitle titleText="Crea il tuo profilo da operatore" />
@@ -203,14 +198,14 @@ export default function RegistrazioneOperatoreRoute() {
                   aria-describedby="provincia-error"
                   className="w-full rounded border border-gray-500 px-2 py-2 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
                   defaultValue={searchParams.get("provincia") || ""}
-                  onChange={async(e) => {
-                    await setSiglaProv(e.target.value);
-                    document.getElementById("navProv")?.click();
+                  onChange={(e) => {
+                    const provincia  = e.target.value
+                    setSearchParams({provincia});
                   }}
                 >
                   <option value={" "}> </option>
-                  {province ? 
-                  province.map((provincia : Comune) => (
+                  {data.province ? 
+                  data.province.map((provincia : Comune) => (
                     <option value={provincia.sigla} key={provincia.sigla}>
                         {`${provincia.nomeProv} (${provincia.sigla})`}
                     </option>
@@ -218,8 +213,6 @@ export default function RegistrazioneOperatoreRoute() {
                   :
                   (<option value={" "}> </option>)}
                 </select>
-                <NavLink id="navProv" to={`?${provUrl.toString()}`}>
-                </NavLink>
                 {actionData?.errors?.comune && (
                 <div className="pt-1 text-red-700" id="comune-error">
                     {actionData.errors.comune}
@@ -246,7 +239,7 @@ export default function RegistrazioneOperatoreRoute() {
                   disabled
                 >
                   <option value={undefined}> </option>
-                  {data.comune ? 
+                  {data.comuni ? 
                   data.comuni.map((comune : Comune) => (
                     <option value={comune.id} key={comune.id}>
                         {`${comune.nome}`}
