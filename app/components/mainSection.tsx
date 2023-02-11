@@ -7,11 +7,11 @@ export default function MainSection(data:any) {
       <div className="absolute z-10 w-full h-full flex flex-col">
          <div className="w-full h-full flex flex-col items-center justify-center py-4">
             {/* TITOLO PAGINA */}
-            <h1 className="lg:text-6xl text-2xl text-white font-semiBold uppercase">
+            <h1 className="lg:text-5xl text-2xl text-white font-semiBold uppercase">
                {data.title}
             </h1>
             {/* PROVINCIE LIST & TYPEWRITER*/}
-            <h5 className="h-10 text-center lg:text-3xl text-2xl text-white font-semiBold my-2">
+            <h5 className="h-10 text-center lg:text-2xl text-2xl text-white font-semiBold my-2">
                <Typewriter
                options={{
                   delay : 40,

@@ -2,6 +2,7 @@
 const withMT = require("@material-tailwind/react/utils/withMT");
 
 module.exports = withMT({
+  darkMode: 'class',
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
     fontFamily: {
@@ -11,11 +12,16 @@ module.exports = withMT({
      },
     colors: {
       main: "#02C3A5",
+      dark: "#1B3A4B",
       secondary: "#d8ebe8",
       hearth: "#ED5C5C",
       paragraph: "#1a2734",
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'custom-dark-bg': "url('../../public/images/backgrounds/stelle_bg2.png')",
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms")],
 });

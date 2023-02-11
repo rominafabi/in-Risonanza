@@ -3,6 +3,24 @@ import { prisma } from "~/db.server";
 
 export type { Comune } from "@prisma/client";
 
+export async function searchComune(nome: string) {
+  return await prisma.comune.findMany({
+    where: {
+      OR: [
+        {
+          nome: {
+            startsWith: nome,
+            mode: 'insensitive'
+          },
+        },
+      ],
+    },
+    orderBy:{
+      nome: "asc",
+    }
+  });
+}
+
 export function getComune(comuneId : string) {
   return prisma.comune.findFirst({
     select: { id: true, nome: true, nomeProv: true },

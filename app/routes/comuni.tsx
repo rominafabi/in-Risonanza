@@ -1,8 +1,8 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, LoaderFunction, MetaFunction, Session } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getProvList } from "~/models/comuni.server";
-import { Outlet } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import MyMenu from "./menu";
+import { getSession } from "~/session.server";
 
 export const meta: MetaFunction = () => {
    return {
@@ -10,17 +10,23 @@ export const meta: MetaFunction = () => {
    };
  };
 
- export async function loader({ request }: LoaderArgs) {
-   const province = await getProvList();
-   return json({province});
- }
+ type LoaderData = {
+   session: Session;
+ }; 
+ 
+ export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
+   const session = await getSession(request);
+ 
+   return json<LoaderData>({session});
+ };
+ 
 
 export default function Province() {
-/*    const data = useLoaderData(); */
+   const { session } = useLoaderData() as LoaderData;
 
    return (
       <main className="min-h-screen min-w-screen">
-         <MyMenu />
+         <MyMenu session={session}/>
          <Outlet />
       </main>
    )

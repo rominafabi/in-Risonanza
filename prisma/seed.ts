@@ -75,8 +75,7 @@ async function seed() {
         },
         pagina: {
           create: {
-            nome: faker.name.firstName(),
-            cognome: faker.name.lastName(),
+            nominativo: faker.name.firstName(),
             titolo: faker.lorem.lines(),
             biografia: faker.lorem.paragraphs(),
             profilePic: faker.internet.avatar(),

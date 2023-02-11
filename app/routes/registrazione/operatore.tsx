@@ -27,35 +27,52 @@ export async function action({ request }: ActionArgs) {
   const password = formData.get("password");
   const role = formData.get("role");
   const comune = formData.get("comune");
-  const telefono = "332323323";
+  const province = formData.get("provincia");
+  const cellulare = formData.get("cellulare");
   const userIs : Role = "PENDING";
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  console.log("comune tipo:", typeof comune?.toString())
+  console.log("comune is: ", comune);
+  console.log("province is: ", province)
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { comune: null, email: "Email is invalid", password: null } },
+      { errors: { comune: null, email: "Email is invalid", password: null,province: null, cellulare:null } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string" || password.length === 0) {
     return json(
-      { errors: { comune: null, email: null, password: "Password is required" } },
+      { errors: { comune: null, email: null, password: "Password is required", province: null, cellulare:null } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json(
-      { errors: { comune: null, email: null, password: "Password is too short" } },
+      { errors: { comune: null, email: null, password: "Password is too short",province: null, cellulare:null } },
       { status: 400 }
     );
   }
 
-  if(!comune || undefined) {
+  if(!province || undefined || null || province === "/") {
     return json(
-      { errors: {email: null, password: null, comune: "Nessun comune selezionato" }},
+      { errors: {email: null, password: null, comune: null, province: "Nessuna provincia selezionata", cellulare:null }},
+      { status: 400}
+    )
+  }
+
+  if(!comune || undefined || null || comune === "/") {
+    console.log("errore nel comune",comune);
+    return json(
+      { errors: {email: null, password: null, comune: "Nessun comune selezionato", province: null, cellulare:null }},
+      { status: 400}
+    )
+  }
+
+  if(!cellulare || undefined || null ||cellulare === "/") {
+    return json(
+      { errors: {email: null, password: null, cellulare: "Nessun numero inserito", province: null, comune: null }},
       { status: 400}
     )
   }
@@ -68,15 +85,15 @@ export async function action({ request }: ActionArgs) {
           email: "A user already exists with this email",
           password: null,
           comune: null,
+          province: null,
+          cellulare: null,
         },
       },
       { status: 400 }
     );
   }
 
-  console.log("role is:", typeof role);
-
-  const operatore = await createOperatore(email, password, userIs, comune?.toString(), telefono);
+  const operatore = await createOperatore(email, password, userIs, comune?.toString(), cellulare?.toString());
 
   return createOperatoreSession({
     request,
@@ -95,12 +112,14 @@ export const meta: MetaFunction = () => {
 
 export default function RegistrazioneOperatoreRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [viewComuni, setViewComuni] = React.useState(false);
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
   const comuneRef = React.useRef<HTMLSelectElement>(null);
   const provinciaRef = React.useRef<HTMLSelectElement>(null);
+  const cellulareRef = React.useRef<HTMLInputElement>(null);
   const data = useLoaderData();
 
   React.useEffect(() => {
@@ -110,14 +129,18 @@ export default function RegistrazioneOperatoreRoute() {
       passwordRef.current?.focus();
     } else if (actionData?.errors?.comune) {
       comuneRef.current?.focus();
+    } else if (actionData?.errors?.province) {
+      provinciaRef.current?.focus();
+    } else if (actionData?.errors?.cellulare) {
+      cellulareRef.current?.focus();
     }
 
-    if(searchParams.get("provincia") !== " " && searchParams.get("provincia") !== null){
+    if(searchParams.get("provincia") !== "/" && searchParams.get("provincia") !== null){
       console.log("provincia is:",searchParams.get("provincia"))
-      document.getElementById("comune")?.removeAttribute("disabled");
-    }else if(searchParams.get("provincia") === " "){
+      setViewComuni(true);
+    }else if(searchParams.get("provincia") === "/"){
       console.log("params is empty")
-      document.getElementById("comune")?.setAttribute("disabled", '');
+      setViewComuni(false);
     }
   }, [actionData, searchParams]);
   return (
@@ -132,7 +155,7 @@ export default function RegistrazioneOperatoreRoute() {
               htmlFor="email"
               className="block text-sm font-openSans text-blue-gray-500"
             >
-              Email address
+              Indirizzo Email
             </label>
             <div className="mt-1">
               <input
@@ -148,7 +171,7 @@ export default function RegistrazioneOperatoreRoute() {
                 className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
               />
               {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
+                <div className="pt-1 text-white font-openSans bg-hearth w-full rounded-xl px-2" id="email-error">
                   {actionData.errors.email}
                 </div>
               )}
@@ -196,14 +219,14 @@ export default function RegistrazioneOperatoreRoute() {
                   ref={provinciaRef}
                   aria-invalid={actionData?.errors?.comune ? true : undefined}
                   aria-describedby="provincia-error"
-                  className="w-full rounded border border-gray-500 px-2 py-2 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
+                  className="w-full rounded border border-blue-gray-500 px-2 py-2.5 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
                   defaultValue={searchParams.get("provincia") || ""}
                   onChange={(e) => {
                     const provincia  = e.target.value
                     setSearchParams({provincia});
                   }}
                 >
-                  <option value={" "}> </option>
+                  <option value={"/"}> </option>
                   {data.province ? 
                   data.province.map((provincia : Comune) => (
                     <option value={provincia.sigla} key={provincia.sigla}>
@@ -211,11 +234,11 @@ export default function RegistrazioneOperatoreRoute() {
                     </option>
                   ))
                   :
-                  (<option value={" "}> </option>)}
+                  (<option value={"/"}> </option>)}
                 </select>
-                {actionData?.errors?.comune && (
-                <div className="pt-1 text-red-700" id="comune-error">
-                    {actionData.errors.comune}
+                {actionData?.errors?.province && (
+                <div className="pt-1 text-red-700" id="provincia-error">
+                    {actionData.errors.province}
                 </div>
                 )}
               </div>
@@ -229,29 +252,64 @@ export default function RegistrazioneOperatoreRoute() {
                 Comune
               </label>
               <div className="mt-1">
+                {viewComuni ? (
                 <select
                   id="comune"
                   name="comune"
                   ref={comuneRef}
                   aria-invalid={actionData?.errors?.comune ? true : undefined}
                   aria-describedby="comune-error"
-                  className="w-full rounded border border-gray-500 px-2 py-2 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
-                  disabled
+                  className="w-full rounded border border-blue-gray-500 px-2 py-2.5 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
                 >
-                  <option value={undefined}> </option>
-                  {data.comuni ? 
-                  data.comuni.map((comune : Comune) => (
+                  <option value={"/"}>Seleziona un comune</option>
+                  {data.comuni.map((comune : Comune) => (
                     <option value={comune.id} key={comune.id}>
                         {`${comune.nome}`}
                     </option>
-                  )) : (<option value={undefined}> </option>)}
+                  ))}
                 </select>
+                ):(
+                  <select
+                  defaultValue={"Provincia non selezionata"}
+                  className="w-full rounded border border-gray-500 px-2 py-2.5 text-xs focus:ring-main focus:border-main font-openSans text-blue-gray-500"
+                  disabled
+                >
+                  <option>Provincia non selezionata</option>
+                </select>
+                )}
                 {actionData?.errors?.comune && (
                 <div className="pt-1 text-red-700" id="comune-error">
                     {actionData.errors.comune}
                 </div>
                 )}
               </div>
+            </div>
+          </div>
+                    {/* INPUT OF PHONE NUMBER */}
+                    <div>
+            <label
+              htmlFor="cellulare"
+              className="block text-sm font-openSans text-blue-gray-500"
+            >
+              Cellulare
+            </label>
+            <div className="mt-1">
+              <input
+                ref={cellulareRef}
+                id="cellulare"
+                required
+                autoFocus={true}
+                name="cellulare"
+                type="cellulare"
+                aria-invalid={actionData?.errors?.cellulare ? true : undefined}
+                aria-describedby="cellulare-error"
+                className="w-full rounded border border-blue-gray-500 px-2 py-1 text-lg focus:ring-main focus:border-main font-openSans text-blue-gray-500"
+              />
+              {actionData?.errors?.cellulare && (
+                <div className="pt-1 text-red-700" id="cellulare-error">
+                  {actionData.errors.cellulare}
+                </div>
+              )}
             </div>
           </div>
 

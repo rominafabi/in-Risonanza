@@ -5,12 +5,14 @@
 // `npx prisma migrate reset` - reset the migrations to the last version. This will reset the DB and run the seed script
 // `npx prisma migrate dev --name <descriptive-name>` - generate a migration file for any changes you make to the schema (this will be committed).
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [citext]
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions","fullTextSearch"]
 }
 
 enum Role {
@@ -50,7 +52,7 @@ model Password {
 
 model Operatore {
   id                String             @id @default(cuid())
-  email             String             @unique
+  email             String             @unique @db.Citext
   cellulare         String             @unique
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
@@ -67,8 +69,7 @@ model Pagina {
   operatore   Operatore    @relation(fields: [operatoreId], references: [id])
   operatoreId String       @unique
   profilePic  String       @default("/images/logo/defaultProfilePic.png")
-  nome        String       @default("")
-  cognome     String       @default("")
+  nominativo  String       @default("")
   titolo      String       @default("")
   biografia   String       @default("")
   socials     SocialLink[]
@@ -88,7 +89,7 @@ model ServiziOperatore {
   assignedAt  DateTime  @default(now())
   comune      Comune    @relation(fields: [comuneId], references: [id])
   comuneId    String
-  prezzo Int @default(50)
+  prezzo      Int       @default(50)
 
   @@id([operatoreId, servizioId])
 }

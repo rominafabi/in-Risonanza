@@ -27,8 +27,8 @@ interface Options {
 
 type sorts =
   | { createdAt: "asc" }
-  | { pagina: { nome: "asc" } }
-  | { pagina: { nome: "desc" } }
+  | { pagina: { nominativo: "asc" } }
+  | { pagina: { nominativo: "desc" } }
   | { createdAt: "desc"}
 
 export async function getOperatorsByProvinciaSiglaAndIdServizio(
@@ -37,17 +37,17 @@ export async function getOperatorsByProvinciaSiglaAndIdServizio(
   options: Options,
   sort: string
 ) {
-  let sorts: sorts = { pagina: { nome: "asc" } };
+  let sorts: sorts = { pagina: { nominativo: "asc" } };
 
   switch (sort) {
     case "null":
       sorts = { createdAt: "asc" };
       break;
     case "asc":
-      sorts = { pagina: { nome: "asc" } };
+      sorts = { pagina: { nominativo: "asc" } };
       break;
     case "desc":
-      sorts = { pagina: { nome: "desc" } };
+      sorts = { pagina: { nominativo: "desc" } };
       break;
     case "recent":
         sorts = { createdAt: "desc"}
@@ -77,7 +77,7 @@ export async function getOperatorsByProvinciaSiglaAndIdServizio(
     const operatorsWithService = await prisma.operatore.findMany({
       where: {
         pagina: {
-          nome: {
+          nominativo: {
             contains: options.where?.id.contains,
             mode: options.where.id.mode,
           },
@@ -86,8 +86,7 @@ export async function getOperatorsByProvinciaSiglaAndIdServizio(
       include: {
         pagina: {
           select: {
-            nome: true,
-            cognome: true,
+            nominativo: true,
             titolo: true,
             profilePic: true,
             id: true,
@@ -108,8 +107,7 @@ export async function getOperatorsByProvinciaSiglaAndIdServizio(
       include: {
         pagina: {
           select: {
-            nome: true,
-            cognome: true,
+            nominativo: true,
             titolo: true,
             profilePic: true,
             id: true,
@@ -129,8 +127,7 @@ export async function getOperatorsByProvinciaSiglaAndIdServizio(
       include: {
         pagina: {
           select: {
-            nome: true,
-            cognome: true,
+            nominativo: true,
             titolo: true,
             profilePic: true,
             id: true,
@@ -186,4 +183,36 @@ export async function getServicesInTheAreaByProvinciaId(provincia: string) {
     where: { id: { in: servizioIds } },
   });
   return servizi;
+}
+
+export async function searchResult(query: string){
+  const operatori = await prisma.operatore.findMany({
+    where: {
+      pagina : {
+        nominativo : {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+    },
+    select: {
+      id: true,
+      pagina: {
+        select: {
+          nominativo: true,
+          profilePic: true,
+          titolo: true,
+        }
+      }
+    }
+  });
+  const servizi = await prisma.servizio.findMany({
+    where: {
+      denominazione: {
+        contains: query,
+        mode: "insensitive",
+      }
+    }
+  });
+  return {operatori, servizi};
 }
