@@ -278,7 +278,7 @@ export default function RouteServizioProvincia() {
                      />
                      <div className="group flex flex-col lg:align-top">
                      <h3 className="text-center font-openSansBold text-2xl text-blue-gray-800 duration-300 group-hover:text-main lg:text-left">
-                        {operatore.pagina?.nome} {operatore.pagina?.cognome}
+                        {operatore.pagina?.nominativo}
                      </h3>
                      <h5 className="py-2 md:py-1 text-center font-openSans text-sm text-blue-gray-500 duration-300 group-hover:text-main lg:text-left">
                         {operatore.pagina?.titolo}
